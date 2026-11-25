@@ -77,7 +77,7 @@ const APPS = [
   { name: 'Load Planner', url: 'load-planner/', icon: 'box', color: '#75BA6A',
     desc: 'Lập phương án xếp hàng vào container 3D, xếp tay, xuất báo cáo PDF / Excel.' },
   /* external: chạy trên máy chủ công ty (qua Tailscale Funnel), mở tab mới, cần tài khoản đăng nhập */
-  { name: 'Quản lý AI & Packing', url: 'https://desktop-89se9ff.tail325211.ts.net/', icon: 'pack', color: '#4f8f45', external: true,
+  { name: 'Quản lý AI & Packing', url: 'ai-packing/', info: 'ai-packing.json', icon: 'pack', color: '#4f8f45', external: true,
     desc: 'Hướng dẫn lắp ráp (AI), đóng gói (Packing), Test Report cho từng sản phẩm; ảnh SP, tìm bằng hình ảnh.' },
   { name: 'Ứng dụng mới', soon: true, desc: 'Sắp ra mắt' },
 ];
@@ -87,6 +87,15 @@ document.getElementById('apps').innerHTML = APPS.map(a => a.soon
   : `<a class="app" href="${a.url}"${a.external ? ' target="_blank" rel="noopener"' : ''}><span class="ico" style="background:${a.color}">${ICONS[a.icon]}</span>${a.external ? '<span class="tag">🔒 Cần tài khoản</span>' : ''}<h2>${a.name}</h2><p>${a.desc}</p><span class="go">Mở ứng dụng ${arrow}</span></a>`
 ).join('');
 document.getElementById('yr').textContent = new Date().getFullYear();
+// thông tin mới nhất của ứng dụng chạy trên máy chủ công ty (tên / mô tả do máy chủ đó tự cập nhật)
+APPS.filter((a) => a.info).forEach((a, i) => {
+  fetch(a.info, { cache: 'no-store' }).then((r) => r.json()).then((j) => {
+    const el = document.querySelector(`a.app[href="${a.url}"]`);
+    if (!el) return;
+    if (j.name) el.querySelector('h2').textContent = j.name;
+    if (j.desc) el.querySelector('p').textContent = j.desc;
+  }).catch(() => {});
+});
 </script>
 </body>
 </html>

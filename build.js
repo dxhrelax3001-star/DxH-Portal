@@ -53,5 +53,22 @@ for (const a of APPS) {
   copyDir(src, path.join(DIST, a.slug));
   console.log('✓', a.slug, '←', REMOTE ? a.repo : src);
 }
+// Ứng dụng chạy trên máy chủ công ty (không build vào đây): đường dẫn cố định dxh3001.pages.dev/<slug>/ chuyển tới link hiện tại.
+// site/<slug>.json do máy chủ của ứng dụng tự cập nhật khi link đổi -> link trên web tổng không bao giờ phải sửa tay.
+const EXTERNAL = ['ai-packing'];
+const redirects = [];
+for (const slug of EXTERNAL) {
+  try {
+    const info = JSON.parse(fs.readFileSync(path.join(ROOT, 'site', slug + '.json'), 'utf8'));
+    const url = String(info.url || '').replace(/\/+$/, '');
+    if (!/^https:\/\/[^\s]+$/.test(url)) throw new Error('url không hợp lệ');
+    redirects.push(`/${slug}  ${url}/  302`, `/${slug}/*  ${url}/:splat  302`);
+    console.log('✓', slug, '→', url, '(chuyển hướng)');
+  } catch (e) {
+    console.error('Bỏ qua', slug, ':', e.message);
+  }
+}
+if (redirects.length) fs.writeFileSync(path.join(DIST, '_redirects'), redirects.join('\n') + '\n');
+
 fs.rmSync(TMP, { recursive: true, force: true });
 console.log('Xong → ' + DIST);
