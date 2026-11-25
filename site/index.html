@@ -42,6 +42,7 @@ a.app:hover .go{gap:10px}
 .soon{border-style:dashed;background:transparent;align-items:center;justify-content:center;text-align:center;color:var(--muted)}
 .soon .ico{background:transparent;border:1.5px dashed var(--line);color:var(--green)}
 .soon h2{color:var(--muted);font-size:18px}
+.tag{position:absolute;top:18px;right:16px;font-size:11.5px;font-weight:600;color:var(--muted);background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:2px 9px}
 footer{text-align:center;color:var(--muted);font-size:13px;padding:18px 16px 26px;border-top:1px solid var(--line)}
 @media (max-width:520px){.logo{width:150px}.grid{grid-template-columns:1fr}.app{min-height:0}}
 </style>
@@ -67,6 +68,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:18px 16px 26p
 const ICONS = {
   pdf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>',
   box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></svg>',
+  pack: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1z"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="m8.5 13 2.5 2.5 4.5-5"/></svg>',
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'
 };
 const APPS = [
@@ -74,13 +76,15 @@ const APPS = [
     desc: 'Sửa chữ, ảnh, bảng trong PDF; ghép/tách trang, OCR bản scan, ký tên, so sánh 2 file.' },
   { name: 'Load Planner', url: 'load-planner/', icon: 'box', color: '#75BA6A',
     desc: 'Lập phương án xếp hàng vào container 3D, xếp tay, xuất báo cáo PDF / Excel.' },
-  { name: 'Ứng dụng mới', soon: true, desc: 'Sắp ra mắt' },
+  /* external: chạy trên máy chủ công ty (qua Tailscale Funnel), mở tab mới, cần tài khoản đăng nhập */
+  { name: 'Quản lý AI & Packing', url: 'https://desktop-89se9ff.tail325211.ts.net/', icon: 'pack', color: '#4f8f45', external: true,
+    desc: 'Hướng dẫn lắp ráp (AI), đóng gói (Packing), Test Report cho từng sản phẩm; ảnh SP, tìm bằng hình ảnh.' },
   { name: 'Ứng dụng mới', soon: true, desc: 'Sắp ra mắt' },
 ];
 const arrow = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 document.getElementById('apps').innerHTML = APPS.map(a => a.soon
   ? `<div class="app soon" aria-disabled="true"><span class="ico">${ICONS.plus}</span><h2>${a.name}</h2><p>${a.desc}</p></div>`
-  : `<a class="app" href="${a.url}"><span class="ico" style="background:${a.color}">${ICONS[a.icon]}</span><h2>${a.name}</h2><p>${a.desc}</p><span class="go">Mở ứng dụng ${arrow}</span></a>`
+  : `<a class="app" href="${a.url}"${a.external ? ' target="_blank" rel="noopener"' : ''}><span class="ico" style="background:${a.color}">${ICONS[a.icon]}</span>${a.external ? '<span class="tag">🔒 Cần tài khoản</span>' : ''}<h2>${a.name}</h2><p>${a.desc}</p><span class="go">Mở ứng dụng ${arrow}</span></a>`
 ).join('');
 document.getElementById('yr').textContent = new Date().getFullYear();
 </script>
